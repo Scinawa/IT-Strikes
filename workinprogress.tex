@@ -1,0 +1,162 @@
+
+\documentclass[10pt,a4paper]{article}
+
+\usepackage{listings}
+\usepackage{fixltx2e}
+\usepackage{color}
+\usepackage[utf8]{inputenc}
+
+
+
+\begin{document}
+
+
+\title{Scioperi prediction}
+\author{
+        Alessandro Luongo \\
+            alessandro@luongo.pro
+}
+\date{\today}
+
+
+\setcounter{secnumdepth}{5} 
+% seting level of numbering (default for "report" is 3). With ''-1'' you have non number also for chapters
+%\setcounter{tocdepth}{5} % if you want all the levels in your table of contents
+ 
+
+\maketitle
+\begin{abstract}
+Spiego un po cosa ci vorrei farei
+\end{abstract} 
+
+\tableofcontents
+
+
+\section{Che divisione in sottospazi cerchiamo?}
+
+Giochiamo con i dati e cerchiamo di vedere quali sottospazi possiamo creare per fare la prediction:
+
+\begin{lstlisting}[frame=single,language=R]
+> summary(calendario_20140101_20141231[,c('RILEVANZA')])
+     Aziendale Interregionale         Locale      Nazionale    Provinciale      Regionale   Territoriale 
+          1261             12            232             27             86            207             47 
+\end{lstlisting}
+
+
+
+\subsection{Grafico di quanto si distribuiscono gli scioperi durante l'anno}
+https://stackoverflow.com/questions/18799901/data-frame-group-by-column
+\begin{lstlisting}[frame=single,language=R]
+plot(summary(calendario_20140101_20141231[,c('DATA_SCIOPERO')]))
+\end{lstlisting}
+
+
+\textbf{proposta}
+Filtriamo scioperi in
+
+per ogni regione, per ogni categoria, per ogni sindacato
+
+
+
+\section{comandi fighi utili con r}
+
+% df[566:570,c('sequence','start','end')] seleziona righe e colonne, occhio alla virgola
+\section{comandi fighi di sql}
+SELECT COUNT( * ) AS count, dow
+FROM  `TABLE 1` 
+GROUP BY  `dow` 
+LIMIT 0 , 30
+
+Select settore,avg(countz), max(countz),avg(countz)/max(countz)  FROM (SELECT settore,count(*) as countz, dow FROM `TABLE 1` GROUP BY `settore`,`dow`) as t GROUP BY `settore`
+ORDER BY avg(countz)/max(countz) ASC
+
+Ora mi invento una metrica:
+Venerdì
+/ 
+media 
+
+
+SELECT DISTINCT  `controparte` 
+FROM  `TABLE 1` 
+WHERE 1 
+LIMIT 0 , 30
+
+SELECT controparte, AVG( countz ) , MAX( countz ) , AVG( countz ) / MAX( countz ) , SUM( countz ) 
+FROM (
+
+SELECT controparte, COUNT( * ) AS countz, dow
+FROM  `TABLE 1` 
+GROUP BY  `controparte` ,  `dow`
+) AS t
+GROUP BY  `controparte` 
+ORDER BY AVG( countz ) / MAX( countz ) ASC
+
+
+
+
+
+SELECT azienda,controparte, AVG( countz ) , MAX( countz ) , AVG( countz ) / MAX( countz ) , SUM( countz ) 
+FROM (
+SELECT azienda,controparte, COUNT( * ) AS countz, dow
+FROM  `TABLE 1` WHERE azienda LIKE "%ATM%"
+GROUP BY  `controparte` ,  `dow`
+) AS t
+GROUP BY  `controparte` 
+ORDER BY AVG( countz ) / MAX( countz ) ASC
+
+
+% per ogni congregaione di sindacati
+SELECT azienda,controparte, COUNT( * ) AS countz, dow
+FROM  `TABLE 1` WHERE azienda LIKE "%ATM%"
+GROUP BY  `controparte` ,  `dow`
+
+
+% la media aziendale
+SELECT azienda,controparte, COUNT( * ) AS countz, dow
+FROM  `TABLE 1` WHERE azienda LIKE "%ATM%"
+GROUP BY `dow`
+
+SELECT azienda,controparte, COUNT( * ) AS countz, dow
+FROM  `TABLE 1` WHERE azienda LIKE "%trenitalia%"
+GROUP BY  `controparte` ,  `dow`
+
+
+
+TODO: piglia lo sci
+
+
+
+
+
+
+
+\section{Obiettivo}
+
+
+\subsection{Codice}
+le specifiche del codice:
+Ci serve codice ben fatto per trovare i sottospazi, oppure e' talmente facile (e quelli sensati) sono cosi' pochi che basta copiaincollare qualche riga di R a mano?
+
+
+\subsection{Progetto}
+\begin{itemize}
+\item dimostrare che e' possibile prevedere un certo tipo di scioperi
+\item dimostrare che gli scioperi il gioved' sono piu frequenti.
+\end{itemize}
+
+Prima cosa da fare: vedere se sono più frequenti il venerdì per i nostri sottospazi. Se è così, allora e' quasi sicuro che risciamo a fare una prediction
+
+
+
+\section{Domande}
+
+Possiamo fare qualche tipo di clustering? Che cosa avrebbe senso mettere in uno spazio e plottare?
+
+Come ce la caviamo con il disagisssimo di "CONTROPARTE" che ha spesso diversi sindacati assieme? Non c'è mai un controparte con un solo grosso sindacato ma sono spesso tanti sindacati assieme ad organizzare uno sciopero.
+
+http://a-little-book-of-r-for-time-series.readthedocs.org/en/latest/src/timeseries.html
+http://www.statmethods.net/advstats/timeseries.html
+
+Vediamo se riesco a fare un sisto di data visualization per quelle cose.
+
+\end{document}
