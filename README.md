@@ -1,9 +1,12 @@
-Giochi vari con scioperi in Italia 2014.
-========
+=== Data Analysis of Italian's strike in 2014 ===
 
-Ciao!
-Questo che vedi è un work in progress di una analisi di alcuni dati che ritengo interessanti: gli scioperi 
+This is a work in progress of a data analysis work I'm doing for leisure and learning.
 
+
+==== Data dimensions ====
+The data has the following attributes:
+
+`
 CONTROPARTE,
 SPECIFICA,
 DATA_ARRIVO,
@@ -27,7 +30,7 @@ SETTORE2,
 INTERVENTO,
 VIOLAZIONE,
 DOW
+`
 
-Se vuoi dare una mano, oppure se hai qualche idea su che informazione che si può cercare in questi dati scrivimi pure!
-
+If you want to help, please send a pull request
 Alessandro Scinawa Antani
